@@ -21,15 +21,18 @@ export const AwesomeApp = () =>{
     
     return  (
         <>
-            <h1>{firstName}</h1>
+        <div>
+
+            <h1 data-testid="first-name">{firstName}</h1>
             <h3>{lastname}</h3>
 
             <p>{favoriteGames.join(',')}</p>
-            <p>{2 + 2}</p>
+            <p className="suma">{2 + 2}</p>
 
             <h1>{isActive ? 'Activo' : 'No activo'}</h1>
 
             <h3 style={mystyles}>{JSON.stringify(address)}</h3>
+        </div>
         
         </>
     )
