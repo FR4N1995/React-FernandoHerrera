@@ -1,23 +1,25 @@
 import React from 'react'
 
 interface Props {
-    title? : string,
-    searches: string[]
+    title?: string,
+    searches: string[],
+    onLabelClicked: (term: string) => void 
+
 }
 
 
-export default function PreviousSearches({title, searches}: Props) {
-  return (
+export default function PreviousSearches({ title, searches, onLabelClicked }: Props) {
+    return (
         <div className='previous-searches'>
-        <h2>{title}</h2>
-        <ul className='previous-searches-list'>
-           {
-            searches.map((term) =>(
-                <li key={term}>{term}</li>
-            ))
-           }
-        </ul>
-    </div>
+            <h2>{title}</h2>
+            <ul className='previous-searches-list'>
+                {
+                    searches.map((term) => (
+                        <li key={term} onClick={() => onLabelClicked(term)}>{term}</li>
+                    ))
+                }
+            </ul>
+        </div>
 
-  )
+    )
 }
