@@ -4,6 +4,11 @@ import { giphyApi } from "../api/giphy.api"
 
 export const getgifsByquery = async(query: string): Promise<Gif[]> =>{
 
+
+    if(query.trim().length === 0){
+        return []
+    }
+
     // fetch (
     //     `https://api.giphy.com/v1/gifs/search?api_key=z3W3kDWJkKbDC1QiiqpeOcvU8O4D1anj&q=${query}&limit=10&lang=es`
     // )
@@ -19,10 +24,12 @@ export const getgifsByquery = async(query: string): Promise<Gif[]> =>{
     //     }
     // )
 
-    const response = await giphyApi<GiphyResponse>('/search', {
+    try {
+
+            const response = await giphyApi<GiphyResponse>('/search', {
         params: {
             q: query,
-            limit: 25
+            limit: 10
         }
     })
 
@@ -35,5 +42,12 @@ export const getgifsByquery = async(query: string): Promise<Gif[]> =>{
         height: Number(gif.images.original.height),
 
     }));
+        
+    } catch (error) {
+        console.error(error); 
+        return [];
+    }
+
+
 
 }
