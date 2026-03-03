@@ -9,6 +9,7 @@ import './index.css'
 // import FocusScreen from './04-useRef/FocusScreen';
 import { TasksApp } from './05-useReduce/TaskApp';
 import { ScrambleWords } from './05-useReduce/reduce/ScrambleWords';
+import {MemoHook} from './06-memos/Memohook'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
       {/* <PokemonPage /> */}
       {/* <FocusScreen /> */}
       {/* <TasksApp /> */}
-      <ScrambleWords />
+      {/* <ScrambleWords /> */}
+      < MemoHook />
   </StrictMode>,
 )
