@@ -86,7 +86,7 @@ export const HeroGridCard = () => {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <Brain className="h-3 w-3 text-blue-500" />
+                    <Brain className="h-3 w-3 text-blue-500" /> 
                     <span className="text-xs font-medium">Intelligence</span>
                   </div>
                  <Progress value={90} className="h-2"  activeColor='bg-blue-500' />
