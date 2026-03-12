@@ -12,7 +12,7 @@ interface Props {
     profesion: boolean;
     activo: boolean;
     name: string;
-    marca: string
+    marca: string 
     description: string
     fuerza: number;
     inteligencia: number;
@@ -83,7 +83,7 @@ export const HeroGridCard = () => {
                     <span className="text-xs font-medium">Strength</span>
                   </div>
                   <Progress value={100} className="h-2 " activeColor='bg-orange-500' />
-                </div>
+                </div> 
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
                     <Brain className="h-3 w-3 text-blue-500" /> 
