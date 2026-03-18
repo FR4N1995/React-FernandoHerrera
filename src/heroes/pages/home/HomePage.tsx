@@ -20,7 +20,7 @@ export const HomePage = () => {
         <CustomJumbotron title="Universo de SuperHeroes" description="Descubre, explora y administra super heroes y villanos" />
 
         {/* Enlaces para avanzar o regresar bhr  */}
-        <CustomBreadcrums />   
+        <CustomBreadcrums currentPage="Nuestros Super Heroes"/>   
 
         {/* Stats Dashboard */}
         <HeroStats />
