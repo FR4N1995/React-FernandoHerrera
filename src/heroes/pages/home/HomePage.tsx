@@ -11,6 +11,8 @@ import { CustomBreadcrums } from "@/components/custom/CustomBreadcrums"
 import { getHeroesByPages } from "@/heroes/actions/get-heroes-by-pages.action"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "react-router"
+import { getSummary } from "@/heroes/actions/get-summary.action"
+import useHerosummary from "@/heroes/hooks/useHerosummary"
 
 
 
@@ -37,7 +39,16 @@ export const HomePage = () => {
     queryKey: ['heroes', {page, limit}],
     queryFn: () => getHeroesByPages(+page, +limit),
     staleTime: 1000 * 60 * 5
-  })
+  });
+
+    // ya no es necesario por que creamos un hook    
+    // const {data: summary} = useQuery({
+    //      queryKey: ['summary-information'],
+    //      queryFn: getSummary,
+    //      staleTime: 1000 * 60 * 5
+    // })
+
+    const {data: summary} = useHerosummary()
 
 
 
@@ -72,7 +83,7 @@ export const HomePage = () => {
               prev.set('tab', 'all'); 
               return prev
             })}
-              >All Characters (16)
+              >All Characters ({summary?.totalHeroes})
               </TabsTrigger>
             
             <TabsTrigger value="favorites"onClick={() => setSearchParams((prev) => {
@@ -85,11 +96,11 @@ export const HomePage = () => {
             <TabsTrigger value="heroes" onClick={() => setSearchParams((prev) =>{
               prev.set('tab', 'heroes')
               return prev
-            })}>Heroes (12)</TabsTrigger>
+            })}>Heroes ({summary?.heroCount})</TabsTrigger>
             <TabsTrigger value="villains" onClick={() => setSearchParams((prev) => {
               prev.set('tab', 'villains');
               return prev
-            })}>Villains (2)</TabsTrigger>
+            })}>Villains ({summary?.villainCount})</TabsTrigger>
           </TabsList>
 
           <TabsContent value='all'>
