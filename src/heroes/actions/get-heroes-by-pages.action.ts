@@ -7,7 +7,8 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getHeroesByPages = async(
     page: number,
-    limit: number = 6
+    limit: number = 6,
+    category: string = 'all'
 
 ): Promise<HeroesResponse> =>{
 
@@ -23,7 +24,8 @@ export const getHeroesByPages = async(
         {
             params: {
                 limit : limit,
-                offset: (page - 1) * limit
+                offset: (page - 1) * limit,
+                category: category
             }
         }
     );

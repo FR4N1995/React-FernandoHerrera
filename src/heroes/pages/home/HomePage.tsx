@@ -5,14 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CustomJumbotron } from "@/components/custom/CustomJumbotron"
 import { HeroStats } from "@/heroes/components/HeroStats"
 import { HeroGrid } from "@/heroes/components/HeroGrid"
-import {  useMemo,  } from "react"
+import {  use, useMemo,  } from "react"
 import { CustomPagination } from "@/components/custom/CustomPagination"
 import { CustomBreadcrums } from "@/components/custom/CustomBreadcrums"
-import { getHeroesByPages } from "@/heroes/actions/get-heroes-by-pages.action"
-import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "react-router"
-import { getSummary } from "@/heroes/actions/get-summary.action"
 import useHerosummary from "@/heroes/hooks/useHerosummary"
+import usePaginatedHero from "@/heroes/hooks/usePaginatedHero"
+import { FavoriteHEroContext } from "@/heroes/context/FavoritesHEroContext"
 
 
 
@@ -25,6 +24,10 @@ export const HomePage = () => {
   const activeTab = searchParams.get('tab') ?? 'all';
   const page = searchParams.get('page') ?? '1';
   const limit = searchParams.get('limit') ?? '10';
+  const category = searchParams.get('category') ?? 'all';
+
+  // usamos el contexto(nos sirve para colocar data a sierta altitud de nuestroc componentes y poder acceder a esa informacion)
+  const {favoriteCount, favorites} = use(FavoriteHEroContext)
 
   // validar url para que cuando la manipule un usuario no se rompa
   const selectedTab = useMemo(() =>{
@@ -35,11 +38,14 @@ export const HomePage = () => {
   // const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'heroes' | 'villains'>('all');
 
   // usamos tasnstack en lugar de useEfect
-  const {data} = useQuery({
-    queryKey: ['heroes', {page, limit}],
-    queryFn: () => getHeroesByPages(+page, +limit),
-    staleTime: 1000 * 60 * 5
-  });
+  // creamos un hook por eso ya no lo necesitamos
+  // const {data} = useQuery({
+  //   queryKey: ['heroes', {page, limit}],
+  //   queryFn: () => getHeroesByPages(+page, +limit),
+  //   staleTime: 1000 * 60 * 5
+  // });
+
+  const {data} = usePaginatedHero(+page, +limit, category)
 
     // ya no es necesario por que creamos un hook    
     // const {data: summary} = useQuery({
@@ -81,6 +87,8 @@ export const HomePage = () => {
 
             <TabsTrigger value="all" onClick={() => setSearchParams((prev) => {
               prev.set('tab', 'all'); 
+              prev.set('category', 'all'); 
+              prev.set('page', '1'); 
               return prev
             })}
               >All Characters ({summary?.totalHeroes})
@@ -91,14 +99,20 @@ export const HomePage = () => {
               return prev
             })}>
               <Heart className="h-4 w-4" />
-              Favorites (3)
+              Favorites ({favoriteCount})
             </TabsTrigger>
             <TabsTrigger value="heroes" onClick={() => setSearchParams((prev) =>{
-              prev.set('tab', 'heroes')
+              prev.set('tab', 'heroes'),
+              prev.set('category', 'hero')
+              prev.set('page', '1'); 
+
               return prev
             })}>Heroes ({summary?.heroCount})</TabsTrigger>
             <TabsTrigger value="villains" onClick={() => setSearchParams((prev) => {
-              prev.set('tab', 'villains');
+              prev.set('tab', 'villains')
+              prev.set('category', 'villain')
+              prev.set('page', '1'); 
+
               return prev
             })}>Villains ({summary?.villainCount})</TabsTrigger>
           </TabsList>
@@ -110,17 +124,17 @@ export const HomePage = () => {
           </TabsContent>
           <TabsContent value="favorites">
             {/* mostrar todos los personajes favoritos*/}
-            <HeroGrid  heroes={[]}/>
-            <h1>Favoritos</h1>
+            <HeroGrid  heroes={favorites}/>
+            
           </TabsContent>
           <TabsContent value="heroes">
             {/* mostrar todos los personajes heroes*/}
-            <HeroGrid heroes={[]}/>
+            <HeroGrid heroes ={data?.heroes ?? []}/>
             <h1>Heroes</h1>
           </TabsContent>
           <TabsContent value="villains">
             {/* mostrar todos los personajes villanos*/}
-            <HeroGrid heroes={[]}/>
+            <HeroGrid heroes ={data?.heroes ?? []}/>
             <h1>Villanos</h1>
           </TabsContent>
 
@@ -129,8 +143,11 @@ export const HomePage = () => {
         {/* Character Grid */}
 
             
-        {/* Pagination */}
-        <CustomPagination totalPages={data?.pages ?? 1} />
+        {/* Pagination  menos para favoritos*/}
+        {
+          selectedTab !== 'favorites' && (  
+            <CustomPagination totalPages={data?.pages ?? 1} />
+          )}
       </>
     </>
   )

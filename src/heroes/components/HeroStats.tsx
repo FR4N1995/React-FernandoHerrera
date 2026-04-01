@@ -4,16 +4,25 @@ import { Heart, Trophy, Users, Zap } from "lucide-react"
 import { HeroStatCard } from "./HeroStatCard"
 import { useQuery } from "@tanstack/react-query"
 import { getSummary } from "../actions/get-summary.action"
+import useHerosummary from "../hooks/useHerosummary"
+import { use } from "react"
+import { FavoriteHEroContext } from "../context/FavoritesHEroContext"
 
 export const HeroStats = () => {
 
-    const {data: summary} = useQuery({
-        queryKey: ['summary-information'],
-        queryFn: getSummary,
-        staleTime: 1000 * 60 * 5
-    })
+    // ya no se necesita por que consumimos nuestro hook
+    // const {data: summary} = useQuery({
+    //     queryKey: ['summary-information'],
+    //     queryFn: getSummary,
+    //     staleTime: 1000 * 60 * 5
+    // })
+    const {favoriteCount} = use(FavoriteHEroContext)
 
+    const {data: summary} = useHerosummary()
 
+    if(!summary){
+        return <div>Loadin...</div>
+    }
 
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -37,8 +46,8 @@ export const HeroStats = () => {
 
             <HeroStatCard title="favoritos" icon={<Heart className="h-4 w-4 text-muted-foreground" />} >
 
-                <div className="text-2xl font-bold text-red-600">3</div>
-                <p className="text-xs text-muted-foreground">18.8% of total</p>
+                <div className="text-2xl font-bold text-red-600">{favoriteCount}</div>
+                <p className="text-xs text-muted-foreground">{(favoriteCount / summary?.totalHeroes * 100).toFixed(2)}% del Total</p>
             </HeroStatCard>
 
             <HeroStatCard title="Fuerte" icon={<Zap className="h-4 w-4 text-muted-foreground" />} >
