@@ -4,11 +4,40 @@ import { describe, expect, test, vi } from "vitest";
 import { HeroStats } from "./HeroStats";
 import useHerosummary from "../hooks/useHerosummary";
 import type { SumaryInformationResponse } from "../types/summary-information.response";
+import { FavoritesHEroProvider } from "../context/FavoritesHEroContext";
 
 
 // implementacion fictisia de nuestro useHerosummary
 vi.mock('../hooks/useHerosummary');
 const mockUserHeroSummary = vi.mocked(useHerosummary);
+
+
+// un heroe ficticio
+const mockHero = {
+    "id": "1",
+    "name": "Clark Kent",
+    "slug": "clark-kent",
+    "alias": "Superman",
+    "powers": [
+        "Súper fuerza",
+        "Vuelo",
+        "Visión de calor",
+        "Visión de rayos X",
+        "Invulnerabilidad",
+        "Súper velocidad"
+    ],
+    "description": "El Último Hijo de Krypton, protector de la Tierra y símbolo de esperanza para toda la humanidad.",
+    "strength": 10,
+    "intelligence": 8,
+    "speed": 9,
+    "durability": 10,
+    "team": "Liga de la Justicia",
+    "image": "1.jpeg",
+    "firstAppearance": "1938",
+    "status": "Active",
+    "category": "Hero",
+    "universe": "DC"
+}
 
 
 // creamos la data que nos trae la respuesta del heroSummary
@@ -95,7 +124,10 @@ const renderHEroStart = (mockData?: Partial<SumaryInformationResponse>) => {
 
     return render(
         <QueryClientProvider client={queryClient}>
-            <HeroStats />
+            <FavoritesHEroProvider>
+                <HeroStats />
+
+            </FavoritesHEroProvider>
         </QueryClientProvider>
     )
 }
@@ -114,7 +146,7 @@ describe('HeroStats', () => {
     });
 
     test('should render heroStast with the mock information ', () => {
-        const {container} = renderHEroStart(mockSummaryData);
+        const { container } = renderHEroStart(mockSummaryData);
         // screen.debug()
 
         expect(container).toMatchSnapshot();
@@ -122,6 +154,22 @@ describe('HeroStats', () => {
         expect(screen.getByText('favoritos')).toBeDefined()
         expect(screen.getByText('Fuerte')).toBeDefined()
 
+
+    })
+
+
+    test('should chane the porcentage of favorites when a hero is added to favorites', () => {
+
+        localStorage.setItem('favorites', JSON.stringify([mockHero]));
+
+        renderHEroStart(mockSummaryData);
+        const favoritesPercentageElement = screen.getByTestId('favorite-percentage');
+        expect(favoritesPercentageElement.innerHTML).toContain('4.00%')
+        
+        const favoritesCount = screen.getByTestId('favorite-count');
+        expect(favoritesCount.innerHTML).toContain('1')
+        // screen.debug()
+        // screen.debug(favoritesCount)
 
     })
 
